@@ -16,7 +16,7 @@ if (cmd === 'read') {
     }
     var pets = JSON.parse(data);
       if(petIndex > pets.length - 1) {
-        console.error(`Usage: node pets.js read ${index}`);
+        console.error(`Usage: node pets.js read ${pets}`);
         process.exit(2);
       }
     console.log(pets[petIndex]);
@@ -52,6 +52,6 @@ if (cmd === 'read') {
   });
 }
 else {
-  console.error(`Usage: node pets.js read`);
+  console.error(`Usage: node pets.js [read | create | update | destroy]`);
   process.exit(1);
 }
