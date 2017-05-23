@@ -16,7 +16,7 @@ if (cmd === 'read') {
     }
     var pets = JSON.parse(data);
       if(petIndex > pets.length - 1) {
-        console.error(`Usage: ${node} ${file} read ${index}`);
+        console.error(`Usage: node pets.js read ${index}`);
         process.exit(2);
       }
     console.log(pets[petIndex]);
@@ -31,11 +31,11 @@ if (cmd === 'read') {
     }
     var pets = JSON.parse(data);
       if (!age || !kind || !name){
-        console.error(`Usage: ${node} ${file} create AGE KIND NAME`);
+        console.error(`Usage: node pets.js create AGE KIND NAME`);
         process.exit(3);
       }
       var newPet = {};
-      newPet.age = age;
+      newPet.age = parseInt(age);
       newPet.kind = kind;
       newPet.name = name;
 
@@ -52,6 +52,6 @@ if (cmd === 'read') {
   });
 }
 else {
-  console.error(`Usage: ${node} ${file} read`);
+  console.error(`Usage: node pets.js read`);
   process.exit(1);
 }
