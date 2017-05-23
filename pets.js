@@ -2,12 +2,30 @@ const code = 5;
 
 const fs = require('fs');
 
-console.log(fs);
-// var read = require('./pets.json');
-//
-//   console.log(read);
+var node = process.argv[0];
+var file = process.argv[1];
+var cmd = process.argv[2];
 
-console.error('error #%d', code);
-// Prints: error #5, to stderr
-console.error('error', code);
-// Prints: error 5, to stderr
+if (cmd === 'read') {
+  fs.readFile(guestsPath, 'utf8', function(err, data) {
+    if (err) {
+      throw err;
+    }
+
+    var guests = JSON.parse(data);
+
+    console.log(guests);
+  });
+}
+else {
+//   console.error('error #%d', code);
+//   // Prints: error #5, to stderr
+//   console.error('error', code);
+//   // Prints: error 5, to stderr
+  console.error(`Usage: ${node} ${file} read`);
+  process.exit(1);
+}
+
+
+
+// console.log(data);
