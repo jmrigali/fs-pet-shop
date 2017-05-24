@@ -1,12 +1,8 @@
-const code = 5;
-
 const fs = require('fs');
 
 var node = process.argv[0];
 var file = process.argv[1];
 var cmd = process.argv[2];
-
-
 
 if (cmd === 'read') {
   var petIndex = process.argv[3];
@@ -15,11 +11,14 @@ if (cmd === 'read') {
       throw err;
     }
     var pets = JSON.parse(data);
-      if(petIndex > pets.length - 1) {
+      if (!petIndex){
+        console.log(pets);
+      } else if (petIndex > pets.length - 1) {
         console.error(`Usage: node pets.js read ${pets}`);
         process.exit(2);
+      } else {
+        console.log(pets[petIndex]);
       }
-    console.log(pets[petIndex]);
   });
 } else if (cmd === 'create'){
   var age = process.argv[3];
