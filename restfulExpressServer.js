@@ -1,3 +1,4 @@
+
 const express= require('express');
 const app = express();
 const bodyParser= require('body-parser');
@@ -32,18 +33,17 @@ app.delete('/pets/:id', function(req, res, next){
       return res.sendStatus(404);
     }
 
-    console.log("Before: ", pets);
     var pet = pets.splice(id, 1)[0];
-    console.log("After: ", pets);
     var newPetsJSON = JSON.stringify(pets);
 
-    fs.writeFile('/pets.json', newPetsJSON, function(writeErr) {
+
+    fs.writeFile('./pets.json', newPetsJSON, function(writeErr) {
+      console.log(writeErr);
       if (writeErr) {
-        console.error(writeErr.stack);
-        return res.sendStatus(500);
+        throw (writeErr);
       }
       res.send(pet);
-      next();
+      // next();
     });
   });
 });
