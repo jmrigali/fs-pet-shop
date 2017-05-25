@@ -19,6 +19,35 @@ app.get('/pets', function(req, res) {
   });
 });
 
+app.delete('/pets/:id', function(req, res, next){
+  fs.readFile('./pets.json', 'utf8', function(err, data){
+    if (err) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+    var id = Number.parseInt(req.params.id);
+    var pets = JSON.parse(data);
+
+    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
+
+    console.log("Before: ", pets);
+    var pet = pets.splice(id, 1)[0];
+    console.log("After: ", pets);
+    var newPetsJSON = JSON.stringify(pets);
+
+    fs.writeFile('/pets.json', newPetsJSON, function(writeErr) {
+      if (writeErr) {
+        console.error(writeErr.stack);
+        return res.sendStatus(500);
+      }
+      res.send(pet);
+      next();
+    });
+  });
+});
+
 app.get('/pets/:id', function(req, res) {
   fs.readFile('./pets.json', 'utf8', function(err, petsJSON){
     if (err) {
@@ -30,9 +59,9 @@ app.get('/pets/:id', function(req, res) {
     var pets = JSON.parse(petsJSON);
 
     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      console.log("hello");
       return res.sendStatus(404);
     }
-
     res.send(pets[id]);
   });
 });
@@ -76,44 +105,35 @@ app.patch('/pets/:id', function(req, res) {
   var kind = req.body.kind;
   var name = req.body.name;
 
-  fs.readFile('./pets.json', 'utf8', function(err, petsJSON){
+  fs.readFile('./pets.json', 'utf8', function(err, data){
     if (err) {
       console.error(err.stack);
       return res.sendStatus(500);
     }
 
     var id = Number.parseInt(req.params.id);
-    var pets = JSON.parse(petsJSON);
+    var pets = JSON.parse(data);
 
     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      res.set('Content-Type', 'text/plain');
       return res.sendStatus(404);
     }
 
-    switch (req.body) {
-      case age:
-      pets[id].age = age;
-      break;
-      case kind:
-      pets[id].kind = kind;
-      break;
-      case kind:
-      pets[id].name = name;
-      break;
-      default:
-      res.sendStatus(404);
+    for(var key in req.body) {
+      pets[id][key] = req.body[key];
     }
 
-    var petsJSON=JSON.stringify(pets);
+    var petsJSON = JSON.stringify(pets);
 
-    fs.writeFile('./pets.json', 'utf8', function(writeErr, petsJSON){
+    fs.writeFile('./pets.json', petsJSON, function(writeErr){
       if(writeErr){
         throw writeErr;
       }
       res.send(pets[id]);
     });
-
   });
 });
+
 
 app.listen(port, function(){
   console.log("Listening on port ", port);
