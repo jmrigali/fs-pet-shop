@@ -20,34 +20,6 @@ app.get('/pets', function(req, res) {
   });
 });
 
-app.delete('/pets/:id', function(req, res, next){
-  fs.readFile('./pets.json', 'utf8', function(err, data){
-    if (err) {
-      console.error(err.stack);
-      return res.sendStatus(500);
-    }
-    var id = Number.parseInt(req.params.id);
-    var pets = JSON.parse(data);
-
-    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-      return res.sendStatus(404);
-    }
-
-    var pet = pets.splice(id, 1)[0];
-    var newPetsJSON = JSON.stringify(pets);
-
-
-    fs.writeFile('./pets.json', newPetsJSON, function(writeErr) {
-      console.log(writeErr);
-      if (writeErr) {
-        throw (writeErr);
-      }
-      res.send(pet);
-      // next();
-    });
-  });
-});
-
 app.get('/pets/:id', function(req, res) {
   fs.readFile('./pets.json', 'utf8', function(err, petsJSON){
     if (err) {
@@ -59,7 +31,6 @@ app.get('/pets/:id', function(req, res) {
     var pets = JSON.parse(petsJSON);
 
     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-      console.log("hello");
       return res.sendStatus(404);
     }
     res.send(pets[id]);
@@ -130,6 +101,33 @@ app.patch('/pets/:id', function(req, res) {
         throw writeErr;
       }
       res.send(pets[id]);
+    });
+  });
+});
+
+app.delete('/pets/:id', function(req, res){
+  fs.readFile('./pets.json', 'utf8', function(err, data){
+    if (err) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+    var id = Number.parseInt(req.params.id);
+    var pets = JSON.parse(data);
+
+    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
+
+    var pet = pets.splice(id, 1)[0];
+    var newPetsJSON = JSON.stringify(pets);
+
+
+    fs.writeFile('./pets.json', newPetsJSON, function(writeErr) {
+      console.log(writeErr);
+      if (writeErr) {
+        throw (writeErr);
+      }
+      res.send(pet);
     });
   });
 });
