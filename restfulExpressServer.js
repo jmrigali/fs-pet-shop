@@ -1,3 +1,4 @@
+
 const express= require('express');
 const app = express();
 const bodyParser= require('body-parser');
@@ -18,7 +19,6 @@ app.get('/pets', function(req, res) {
     res.send(pets);
   });
 });
-
 
 app.get('/pets/:id', function(req, res) {
   fs.readFile('./pets.json', 'utf8', function(err, petsJSON){
@@ -105,7 +105,7 @@ app.patch('/pets/:id', function(req, res) {
   });
 });
 
-app.delete('/pets/:id', function(req, res, next){
+app.delete('/pets/:id', function(req, res){
   fs.readFile('./pets.json', 'utf8', function(err, data){
     if (err) {
       console.error(err.stack);
@@ -118,21 +118,20 @@ app.delete('/pets/:id', function(req, res, next){
       return res.sendStatus(404);
     }
 
-    console.log("Before: ", pets);
     var pet = pets.splice(id, 1)[0];
-    console.log("After: ", pets);
     var newPetsJSON = JSON.stringify(pets);
 
+
     fs.writeFile('./pets.json', newPetsJSON, function(writeErr) {
+      console.log(writeErr);
       if (writeErr) {
-        console.error(writeErr.stack);
-        return res.sendStatus(500);
+        throw (writeErr);
       }
       res.send(pet);
-      next();
     });
   });
 });
+
 
 app.listen(port, function(){
   console.log("Listening on port ", port);
